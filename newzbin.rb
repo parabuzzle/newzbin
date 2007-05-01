@@ -43,12 +43,16 @@ module Newzbin
     def search(params)
       nzbs = []
       response = XmlSimple.xml_in(http_get(request_url(params)), { 'ForceArray' => false })
-      if response["channel"]["item"] == nil
-        nzbs
-      else
+      
+      case response["channel"]["item"].class.name
+      when "Array"
         response["channel"]["item"].each { |item| nzbs << Nzb.new(item)}
-        nzbs
+      when "Hash"
+        nzbs << Nzb.new(response["channel"]["item"])
       end
+      
+      nzbs
+
     end
 
     def get_nzb(id)
@@ -75,11 +79,12 @@ module Newzbin
     attr_accessor :pub_date, :size_in_bytes, :category, :title, :id
 
     def initialize(details)
-      @pub_date = details["pubDate"]
-      @size_in_bytes = details["size"]["content"]
-      @category = details["category"]
-      @title = details["title"]
-      @id = details["id"]
+      puts details.inspect
+      # @pub_date = details["pubDate"]
+      # @size_in_bytes = details["size"]["content"]
+      # @category = details["category"]
+      # @title = details["title"]
+      # @id = details["id"]
     end
   end
     
