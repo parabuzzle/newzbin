@@ -80,11 +80,11 @@ module Newzbin
 
     def initialize(details)
       puts details.inspect
-      # @pub_date = details["pubDate"]
-      # @size_in_bytes = details["size"]["content"]
-      # @category = details["category"]
-      # @title = details["title"]
-      # @id = details["id"]
+      @pub_date = details["pubDate"]
+      @size_in_bytes = details["size"]["content"]
+      @category = details["category"]
+      @title = details["title"]
+      @id = details["id"]
     end
   end
     
