@@ -35,7 +35,9 @@ module Newzbin
     end
 
     def request_url(params)
-      url = "#{@host}#{@search}?searchaction=Go&feed=rss"
+      params.delete_if {|key, value| value == '' }
+      
+      url = "#{@host}#{@search}?searchaction=Search&fpn=p&feed=rss"
       params.each_key do |key| url += "&#{key}=" + CGI::escape(params[key].to_s) end if params
       url
     end
