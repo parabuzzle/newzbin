@@ -6,14 +6,11 @@
 #
 # newz = Newzbin::Connection.new('username', 'password')
 # nzbs = newz.search(:q => 'casino royale', :ps_rb_video_format => 131072)
-# 
+#
+# puts nzbs.inspect
 # 
 # newz.get_nzb(nzbs.first.id)
 
-# newz = Newzbin::Connection.new('seven5', 'twan7575')
-# nzbs = newz.search(:q => 'casino royale', :ps_rb_video_format => 131072)
-# 
-# puts nzbs.inspect unless nzbs == false
 
 
 require 'rubygems'
@@ -47,7 +44,7 @@ module Newzbin
       nzbs = []
       response = XmlSimple.xml_in(http_get(request_url(params)), { 'ForceArray' => false })
       if response["channel"]["item"] == nil
-        false
+        nzbs
       else
         response["channel"]["item"].each { |item| nzbs << Nzb.new(item)}
         nzbs
