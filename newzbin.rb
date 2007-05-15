@@ -56,6 +56,22 @@ module Newzbin
       nzbs
 
     end
+    
+    def get_name(id)
+      response = Net::HTTP.post_form(URI.parse("#{@host}#{@dnzb}"),{:username => @username, :password => @password, :reportid => id})
+
+      case response["x-dnzb-rcode"].to_i
+      when 200
+        response["x-dnzb-name"]
+      when 450
+        puts "ERROR 450: 5 nzbs per minute please."
+        false
+      else 
+        puts "ERROR #{response["x-dnzb-rcode"]}: #{response["x-dnzb-rtext"]}"
+        false
+      end
+
+    end
 
     def get_nzb(id)
       response = Net::HTTP.post_form(URI.parse("#{@host}#{@dnzb}"),{:username => @username, :password => @password, :reportid => id})
@@ -91,3 +107,4 @@ module Newzbin
   end
     
 end
+
