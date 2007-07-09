@@ -97,7 +97,7 @@ module Newzbin
     attr_accessor :pub_date, :size_in_bytes, :category, :title, :id
 
     def initialize(details)
-      puts details.inspect
+      #puts details.inspect
       @pub_date = details["pubDate"]
       @size_in_bytes = details["size"]["content"]
       @category = details["category"]
