@@ -24,27 +24,34 @@ module Newzbin
 
     def initialize(username=nil, password=nil)
       @host = 'http://v3.newzbin.com'
-      @search = '/search/query'
+      @search = '/search/'
       @dnzb = '/dnzb/'
       @username = username
       @password = password
     end
 
     def http_get(url)
-      Net::HTTP.get_response(URI.parse(url)).body.to_s
+
+      Net::HTTP.start('v3.newzbin.com') do |http|
+        req = Net::HTTP::Get.new(url)
+        req.add_field 'Cookie', 'NzbSmoke=uFZSBnDu0%243PJto1d6yFQMM5scc6KajXscEgw%3D; NzbSessionID=4a93bd5e3e1e53058284ce97b68447a0'
+        
+        response = http.request(req)
+        response.body
+      end
+      
     end
 
-    def request_url(params)
+    def request_url(q, params)
       params.delete_if {|key, value| (value == nil || value == '') }
-      
-      url = "#{@host}#{@search}?searchaction=Search&fpn=p&feed=rss"
+      url = "#{@search}?q=#{q}&searchaction=Search&fpn=p&area=-1&order=desc&areadone=-1&feed=rss&fauth=MjIwNTk1LTZmMmM2ZmI3Y2NiOWQwYjJlNDEyMWVhYTU2ZDEyMWE2ZjY4ZTQ1ZDk%3D"
       params.each_key do |key| url += "&#{key}=" + CGI::escape(params[key].to_s) end if params
       url
     end
 
-    def search(params)
+    def search(q, params={})
       nzbs = []
-      response = XmlSimple.xml_in(http_get(request_url(params)), { 'ForceArray' => false })
+      response = XmlSimple.xml_in(http_get(request_url(q, params)), { 'ForceArray' => false })
       
       case response["channel"]["item"].class.name
       when "Array"
@@ -94,17 +101,22 @@ module Newzbin
   
 
   class Nzb
-    attr_accessor :pub_date, :size_in_bytes, :category, :title, :id
+    attr_accessor :pub_date, :size_in_bytes, :category, :attributes, :title, :id
 
     def initialize(details)
       #puts details.inspect
       @pub_date = details["pubDate"]
       @size_in_bytes = details["size"]["content"]
       @category = details["category"]
+      @attributes = details["attributes"]["attribute"]
       @title = details["title"]
       @id = details["id"]
     end
   end
     
 end
+
+
+
+# 
 
