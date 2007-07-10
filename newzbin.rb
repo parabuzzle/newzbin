@@ -108,9 +108,24 @@ module Newzbin
       @pub_date = details["pubDate"]
       @size_in_bytes = details["size"]["content"]
       @category = details["category"]
-      @attributes = details["attributes"]["attribute"]
       @title = details["title"]
       @id = details["id"]
+      @attributes = {}
+
+      details["attributes"]["attribute"].each do |attri|
+
+        case @attributes.has_key? attri["type"]
+        when false
+          @attributes[attri["type"]] = attri["content"]
+        when true
+          @attributes[attri["type"]] += ", #{attri["content"]}"
+        end
+
+      end
+
+
+
+
     end
   end
     
