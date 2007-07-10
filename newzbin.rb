@@ -42,16 +42,16 @@ module Newzbin
       
     end
 
-    def request_url(q, params)
+    def request_url(params)
       params.delete_if {|key, value| (value == nil || value == '') }
-      url = "#{@search}?q=#{q}&searchaction=Search&fpn=p&area=-1&order=desc&areadone=-1&feed=rss&fauth=MjIwNTk1LTZmMmM2ZmI3Y2NiOWQwYjJlNDEyMWVhYTU2ZDEyMWE2ZjY4ZTQ1ZDk%3D"
+      url = "#{@search}?searchaction=Search&fpn=p&area=-1&order=desc&areadone=-1&feed=rss&fauth=MjIwNTk1LTZmMmM2ZmI3Y2NiOWQwYjJlNDEyMWVhYTU2ZDEyMWE2ZjY4ZTQ1ZDk%3D"
       params.each_key do |key| url += "&#{key}=" + CGI::escape(params[key].to_s) end if params
       url
     end
 
-    def search(q, params={})
+    def search(params)
       nzbs = []
-      response = XmlSimple.xml_in(http_get(request_url(q, params)), { 'ForceArray' => false })
+      response = XmlSimple.xml_in(http_get(request_url(params)), { 'ForceArray' => false })
       
       case response["channel"]["item"].class.name
       when "Array"
