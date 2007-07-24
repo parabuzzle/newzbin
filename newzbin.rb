@@ -25,7 +25,7 @@ module Newzbin
     def initialize(username=nil, password=nil)
       @host = 'http://v3.newzbin.com'
       @search = '/search/'
-      @dnzb = '/dnzb/'
+      @dnzb = '/dnzb'
       @username = username
       @password = password
     end
@@ -34,7 +34,7 @@ module Newzbin
 
       Net::HTTP.start('v3.newzbin.com') do |http|
         req = Net::HTTP::Get.new(url)
-        req.add_field 'Cookie', 'NzbSmoke=uFZSBnDu0%243PJto1d6yFQMM5scc6KajXscEgw%3D; NzbSessionID=4a93bd5e3e1e53058284ce97b68447a0'
+        req.add_field 'Cookie', 'NzbSmoke=1ufqulyHF%24UAMVQTnKpnqJOfA3MH7TDCQ2gPU%3D; NzbSessionID=1d7812a564a222b6f1370e6e68186be7'
         
         response = http.request(req)
         response.body
@@ -65,7 +65,19 @@ module Newzbin
     end
     
     def get_name(id)
-      response = Net::HTTP.post_form(URI.parse("#{@host}#{@dnzb}"),{:username => @username, :password => @password, :reportid => id})
+      http = Net::HTTP.new(@host)
+      
+      http.request_post('/dnzb', "username=#{@username}&password=#{@password}&reportid=#{id}") {|response|
+        p response.status
+        p response['content-type']
+        # response.read_body do |str|   # read body now
+        #   print str
+        # end
+      }
+      
+      # response = http.post(@dnzb, "username=#{@username}&password=#{@password}&reportid=#{id}")
+      
+      # response = Net::HTTP.post_form(URI.parse("#{@host}#{@dnzb}"),{:username => @username, :password => @password, :reportid => id})
 
       case response["x-dnzb-rcode"].to_i
       when 200
@@ -111,27 +123,25 @@ module Newzbin
       @title = details["title"]
       @id = details["id"]
       @attributes = {}
+      
+      # puts details["attributes"]["attribute"].class.n
 
-      details["attributes"]["attribute"].each do |attri|
+      case details["attributes"]["attribute"].class.name
+      when "Array"
+        details["attributes"]["attribute"].each do |attri|
 
-        case @attributes.has_key? attri["type"]
-        when false
-          @attributes[attri["type"]] = attri["content"]
-        when true
-          @attributes[attri["type"]] += ", #{attri["content"]}"
+          case @attributes.has_key? attri["type"]
+          when false
+            @attributes[attri["type"]] = attri["content"]
+          when true
+            @attributes[attri["type"]] += ", #{attri["content"]}"
+          end
+
         end
-
       end
-
-
 
 
     end
   end
     
 end
-
-
-
-# 
-
