@@ -113,7 +113,7 @@ module Newzbin
   
 
   class Nzb
-    attr_accessor :pub_date, :size_in_bytes, :category, :attributes, :title, :id
+    attr_accessor :pub_date, :size_in_bytes, :category, :attributes, :title, :info_url, :id
 
     def initialize(details)
       #puts details.inspect
@@ -122,6 +122,7 @@ module Newzbin
       @category = details["category"]
       @title = details["title"]
       @id = details["id"]
+      @info_url = details["moreinfo"]
       @attributes = {}
       
       # puts details["attributes"]["attribute"].class.n
