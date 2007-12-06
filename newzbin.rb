@@ -31,20 +31,20 @@ module Newzbin
     end
 
     def http_get(url)
-
       Net::HTTP.start('v3.newzbin.com') do |http|
         req = Net::HTTP::Get.new(url)
-        req.add_field 'Cookie', 'NzbSmoke=wn4cpzwaC%24KqT8t8qnk%2BMaCpyHH8UOCyAlAeM%3D; NzbSessionID=bd00b98d35b29dece13c11ebaee09924'
-        
+        req.add_field 'Cookie', 'NzbSmoke=bC0vRtKjC%24Okl0y%2F6sIbDENAI0EPod5I1NSH4%3D; NzbSessionID=c9b75f20218eac81d0bdee7a7cd87863'
         response = http.request(req)
+        puts response.body
         response.body
       end
       
     end
 
     def request_url(params)
+      # http://v3.newzbin.com/search/?q=speed&searchaction=Search&fpn=p&category=6&area=-1ps_rb_video_format=131072&sort=ps_edit_date&order=desc&areadone=-1&feed=rss&
       params.delete_if {|key, value| (value == nil || value == '') }
-      url = "#{@search}?searchaction=Search&fpn=p&area=-1&order=desc&areadone=-1&feed=rss&fauth=MjIwNTk1LTZmMmM2ZmI3Y2NiOWQwYjJlNDEyMWVhYTU2ZDEyMWE2ZjY4ZTQ1ZDk%3D"
+      url = "#{@search}?searchaction=Search&fpn=p&area=-1&order=desc&areadone=-1&feed=rss&u_nfo_posts_only=0&sort=ps_edit_date&order=desc&u_url_posts_only=0&u_comment_posts_only=0&u_v3_retention=9504000"
       params.each_key do |key| url += "&#{key}=" + CGI::escape(params[key].to_s) end if params
       url
     end
@@ -125,7 +125,6 @@ module Newzbin
       @info_url = details["moreinfo"]
       @attributes = {}
       
-      # puts details["attributes"]["attribute"].class.n
 
       case details["attributes"]["attribute"].class.name
       when "Array"

@@ -6,7 +6,7 @@
 require 'newzbin'
 
 newz = Newzbin::Connection.new('seven5', 'pass')
-nzbs = newz.search(:q => 'the mummy', :ps_rb_video_format => 131072, "category"=>"6", "ps_rb_video_genre"=>"1073741824", "commit"=>"search", "ps_rb_source"=>"1073741824")
+nzbs = newz.search(:q => 'ratatouille', :ps_rb_video_format => 131072, "category"=>"6", "commit"=>"search")
 
 #puts nzbs.inspect
 
