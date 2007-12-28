@@ -6,8 +6,8 @@
 require 'newzbin'
 
 newz = Newzbin::Connection.new('seven5', 'pass')
-nzbs = newz.search(:q => 'ratatouille', :ps_rb_video_format => 131072, "category"=>"6", "commit"=>"search")
-
+nzbs = newz.search(:q => 'the kingdom', :ps_rb_video_format => 131072, "category"=>"6", "commit"=>"search")
+# 1073741824
 #puts nzbs.inspect
 
 puts nzbs.size
