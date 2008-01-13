@@ -6,19 +6,20 @@
 require 'newzbin'
 
 newz = Newzbin::Connection.new('seven5', 'pass')
-nzbs = newz.search(:q => 'the kingdom', :ps_rb_video_format => 131072, "category"=>"6", "commit"=>"search")
+nzbs = newz.search(:q => '', :ps_rb_video_format => 131072, "category"=>"6", "commit"=>"search")
 # 1073741824
 #puts nzbs.inspect
 
-puts nzbs.size
+nzb = nzbs.first
 
 new_attr = {}
 
-nzbs.first.attributes.each_pair do |key, value|
-  puts "#{key}: #{value}"
-end
 
-puts nzbs.first.info_url
+# nzbs.first.attributes.each_pair do |key, value|
+#   puts "#{key}: #{value}"
+# end
+puts nzb.title
+puts nzb.attributes.inspect
 
 
 
