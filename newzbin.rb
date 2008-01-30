@@ -33,7 +33,7 @@ module Newzbin
     def http_get(url)
       Net::HTTP.start('v3.newzbin.com') do |http|
         req = Net::HTTP::Get.new(url)
-        req.add_field 'Cookie', 'NzbSmoke=8I2tOpehD%242GmN5yYzJ39r7danWnVbuwxU0OA%3D; NzbSessionID=46b69edf13ecfb0233d8e59a1b431499'
+        req.add_field 'Cookie', 'NzbSmoke=Px0oEtmhh%24APwIHmiPyBRJTjBcfOw7HPbCiho%3D; NzbSessionID=24c3e702b9caeb9c490e831042864b85'
         response = http.request(req)
         # puts response.body
         response.body
