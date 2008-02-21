@@ -5,11 +5,12 @@
 
 require 'newzbin'
 
-newz = Newzbin::Connection.new('seven5', 'pass')
-nzbs = newz.search(:q => 'rambo', :ps_rb_video_format => 16, "category"=>"8", "commit"=>"search")
+newz = Newzbin::Connection.new("RKTU0McXx%24Uc4e4KXP1L0sl4O1U9YOchO%2B0DA%3D", "a0fed567eb1a3e6e95c8a3d46fe0c6e7", 'seven5', 'pass')
+nzbs = newz.search(:q => 'independence day', :ps_rb_video_format => 16, "category"=>"6", "commit"=>"search")
 # 1073741824
 #puts nzbs.inspect
 
+puts nzbs.first.title
 puts nzbs.first.attributes.inspect
 
 

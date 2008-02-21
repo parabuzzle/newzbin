@@ -6,21 +6,22 @@ require 'xmlsimple'
 module Newzbin
   
   class Connection
+    attr_accessor :host, :search_path, :dnzb_path, :username, :password, :nzbSmoke, :nzbSessionID
 
-    def initialize(NzbSmoke=nil, NzbSessionID=nile, username=nil, password=nil)
-      @host = 'http://v3.newzbin.com'
-      @search = '/search/'
-      @dnzb = '/dnzb'
-      @username = username
-      @password = password
-      @NzbSmoke = NzbSmoke
-      @NzbSessionID = NzbSessionID
+    def initialize(nzbSmoke=nil, nzbSessionID=nil, username=nil, password=nil)
+      self.host = 'http://v3.newzbin.com'
+      self.search_path = '/search/'
+      self.dnzb_path = '/dnzb'
+      self.username = username
+      self.password = password
+      self.nzbSmoke = nzbSmoke
+      self.nzbSessionID = nzbSessionID
     end
 
     def http_get(url)
       Net::HTTP.start('v3.newzbin.com') do |http|
         req = Net::HTTP::Get.new(url)
-        req.add_field 'Cookie', "NzbSmoke=#{@NzbSmoke}; NzbSessionID=#{@NzbSessionID}" if @NzbSmoke && @NzbSessionID
+        req.add_field 'Cookie', "NzbSmoke=#{self.nzbSmoke}; NzbSessionID=#{self.nzbSessionID}" if self.nzbSmoke && self.nzbSessionID
         response = http.request(req)
         response.body
       end
@@ -29,7 +30,7 @@ module Newzbin
 
     def request_url(params)
       params.delete_if {|key, value| (value == nil || value == '') }
-      url = "#{@search}?searchaction=Search&fpn=p&area=-1&order=desc&areadone=-1&feed=rss&u_nfo_posts_only=0&sort=ps_edit_date&order=desc&u_url_posts_only=0&u_comment_posts_only=0&u_v3_retention=9504000"
+      url = "#{self.search_path}?searchaction=Search&fpn=p&area=-1&order=desc&areadone=-1&feed=rss&u_nfo_posts_only=0&sort=ps_edit_date&order=desc&u_url_posts_only=0&u_comment_posts_only=0&u_v3_retention=9504000"
       params.each_key do |key| url += "&#{key}=" + CGI::escape(params[key].to_s) end if params
       url
     end
@@ -50,9 +51,9 @@ module Newzbin
     end
     
     def get_name(id)
-      http = Net::HTTP.new(@host)
+      http = Net::HTTP.new(self.host)
       
-      http.request_post('/dnzb', "username=#{@username}&password=#{@password}&reportid=#{id}") {|response|
+      http.request_post(self.dnzb_path, "username=#{self.username}&password=#{self.password}&reportid=#{id}") {|response|
         p response.status
         p response['content-type']
       }
@@ -71,7 +72,7 @@ module Newzbin
     end
 
     def get_nzb(id)
-      response = Net::HTTP.post_form(URI.parse("#{@host}#{@dnzb}"),{:username => @username, :password => @password, :reportid => id})
+      response = Net::HTTP.post_form(URI.parse("#{self.host}#{self.dnzb_path}"),{:username => self.username, :password => self.password, :reportid => id})
 
       case response["x-dnzb-rcode"].to_i
       when 200
@@ -94,24 +95,24 @@ module Newzbin
     attr_accessor :pub_date, :size_in_bytes, :category, :attributes, :title, :info_url, :id
 
     def initialize(details)
-      @pub_date = details["pubDate"]
-      @size_in_bytes = details["size"]["content"]
-      @category = details["category"]
-      @title = details["title"]
-      @id = details["id"]
-      @info_url = details["moreinfo"]
-      @attributes = {}
+      self.pub_date = details["pubDate"]
+      self.size_in_bytes = details["size"]["content"]
+      self.category = details["category"]
+      self.title = details["title"]
+      self.id = details["id"]
+      self.info_url = details["moreinfo"]
+      self.attributes = {}
       
 
       case details["attributes"]["attribute"].class.name
       when "Array"
         details["attributes"]["attribute"].each do |attri|
 
-          case @attributes.has_key? attri["type"]
+          case self.attributes.has_key? attri["type"]
           when false
-            @attributes[attri["type"]] = attri["content"]
+            self.attributes[attri["type"]] = attri["content"]
           when true
-            @attributes[attri["type"]] += ", #{attri["content"]}"
+            self.attributes[attri["type"]] += ", #{attri["content"]}"
           end
 
         end
