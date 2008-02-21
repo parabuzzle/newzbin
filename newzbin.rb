@@ -7,27 +7,27 @@ module Newzbin
   
   class Connection
 
-    def initialize(username=nil, password=nil)
+    def initialize(NzbSmoke=nil, NzbSessionID=nile, username=nil, password=nil)
       @host = 'http://v3.newzbin.com'
       @search = '/search/'
       @dnzb = '/dnzb'
       @username = username
       @password = password
+      @NzbSmoke = NzbSmoke
+      @NzbSessionID = NzbSessionID
     end
 
     def http_get(url)
       Net::HTTP.start('v3.newzbin.com') do |http|
         req = Net::HTTP::Get.new(url)
-        req.add_field 'Cookie', 'NzbSmoke=RKTU0McXx%24Uc4e4KXP1L0sl4O1U9YOchO%2B0DA%3D; NzbSessionID=a0fed567eb1a3e6e95c8a3d46fe0c6e7'
+        req.add_field 'Cookie', "NzbSmoke=#{NzbSmoke}; NzbSessionID=#{NzbSessionID}"
         response = http.request(req)
-        # puts response.body
         response.body
       end
       
     end
 
     def request_url(params)
-      # http://v3.newzbin.com/search/?q=speed&searchaction=Search&fpn=p&category=6&area=-1ps_rb_video_format=131072&sort=ps_edit_date&order=desc&areadone=-1&feed=rss&
       params.delete_if {|key, value| (value == nil || value == '') }
       url = "#{@search}?searchaction=Search&fpn=p&area=-1&order=desc&areadone=-1&feed=rss&u_nfo_posts_only=0&sort=ps_edit_date&order=desc&u_url_posts_only=0&u_comment_posts_only=0&u_v3_retention=9504000"
       params.each_key do |key| url += "&#{key}=" + CGI::escape(params[key].to_s) end if params
@@ -55,14 +55,7 @@ module Newzbin
       http.request_post('/dnzb', "username=#{@username}&password=#{@password}&reportid=#{id}") {|response|
         p response.status
         p response['content-type']
-        # response.read_body do |str|   # read body now
-        #   print str
-        # end
       }
-      
-      # response = http.post(@dnzb, "username=#{@username}&password=#{@password}&reportid=#{id}")
-      
-      # response = Net::HTTP.post_form(URI.parse("#{@host}#{@dnzb}"),{:username => @username, :password => @password, :reportid => id})
 
       case response["x-dnzb-rcode"].to_i
       when 200
@@ -101,7 +94,6 @@ module Newzbin
     attr_accessor :pub_date, :size_in_bytes, :category, :attributes, :title, :info_url, :id
 
     def initialize(details)
-      #puts details.inspect
       @pub_date = details["pubDate"]
       @size_in_bytes = details["size"]["content"]
       @category = details["category"]
