@@ -20,7 +20,7 @@ module Newzbin
     def http_get(url)
       Net::HTTP.start('v3.newzbin.com') do |http|
         req = Net::HTTP::Get.new(url)
-        req.add_field 'Cookie', "NzbSmoke=#{NzbSmoke}; NzbSessionID=#{NzbSessionID}"
+        req.add_field 'Cookie', "NzbSmoke=#{@NzbSmoke}; NzbSessionID=#{@NzbSessionID}" if @NzbSmoke && @NzbSessionID
         response = http.request(req)
         response.body
       end
