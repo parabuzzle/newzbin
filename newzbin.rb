@@ -8,14 +8,14 @@ module Newzbin
   class Connection
     attr_accessor :host, :search_path, :dnzb_path, :username, :password, :nzbSmoke, :nzbSessionID
 
-    def initialize(nzbSmoke=nil, nzbSessionID=nil, username=nil, password=nil)
+    def initialize(options={})
       self.host = 'http://v3.newzbin.com'
       self.search_path = '/search/'
       self.dnzb_path = '/dnzb'
-      self.username = username
-      self.password = password
-      self.nzbSmoke = nzbSmoke
-      self.nzbSessionID = nzbSessionID
+      self.username = options[:username]
+      self.password = options[:password]
+      self.nzbSmoke = options[:nzbSmoke]
+      self.nzbSessionID = options[:nzbSessionID]
     end
 
     def http_get(url)

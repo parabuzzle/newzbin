@@ -5,7 +5,7 @@
 
 require 'newzbin'
 
-newz = Newzbin::Connection.new("RKTU0McXx%24Uc4e4KXP1L0sl4O1U9YOchO%2B0DA%3D", "a0fed567eb1a3e6e95c8a3d46fe0c6e7", 'seven5', 'pass')
+newz = Newzbin::Connection.new(:nzbSmoke => "RKTU0McXx%24Uc4e4KXP1L0sl4O1U9YOchO%2B0DA%3D", :nzbSessionID => "a0fed567eb1a3e6e95c8a3d46fe0c6e7")
 nzbs = newz.search(:q => 'independence day', :ps_rb_video_format => 16, "category"=>"6", "commit"=>"search")
 # 1073741824
 #puts nzbs.inspect
