@@ -1,0 +1,4 @@
+require 'newzbin'
+include Newzbin
+
+
