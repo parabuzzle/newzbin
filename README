@@ -23,8 +23,6 @@ newz.get_nzb(nzbs.first.id) => downloads the nzb file
 
 
 
-
-
 # to find more vars to search with, view the source of this page. yah yeah, i know that sucks. It wont always suck
 # http://v3.newzbin.com/search
 
@@ -32,3 +30,11 @@ newz.get_nzb(nzbs.first.id) => downloads the nzb file
 # :q => casino+royale # this is the query you're searching for
 # :category => 5 # category is movies, tv, etc
 # :ps_rb_video_format => 131072 # format means xvid, 720p, x264, etc
+
+
+
+
+
+
+
+
