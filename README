@@ -1,12 +1,34 @@
 ####### Newzbin API
 ### http://v3.newzbin.com
 
+### Created by Jon Maddox on 2007-02-10.
+
+
 open a new newzbin connection, and search it with the method provided. Pass it vars to narrow the search
 Download the nzb using the provided get_nzb method
 
-newz = Newzbin::Connection.new('username', 'password')
-nzbs = newz.search(:q => 'casino royale', :ps_rb_video_format => 131072)
+# You need to pass in Newzbin's required cookies in order to get rich metadata attributes on the nzbs
+# If you don't you can still search, you just dont get values like resolution, source, and audio data etc.
+newz = Newzbin::Connection.new(:nzbSmoke => "RKTU0McXx%24Uc4e4KXP1L0sl4O1U9YOchO%2B0DA%3D", :nzbSessionID => "a0fed567eb1a3e6e95c8a3d46fe0c6e7")
+
+
+nzbs = newz.search(:q => 'independence day', :ps_rb_video_format => 16, "category"=>"6", "commit"=>"search")
 
 puts nzbs.inspect
+puts nzbs.first.title => 
+puts nzbs.first.attributes.inspect
 
-newz.get_nzb(nzbs.first.id)
+
+newz.get_nzb(nzbs.first.id) => downloads the nzb file
+
+
+
+
+
+# to find more vars to search with, view the source of this page. yah yeah, i know that sucks. It wont always suck
+# http://v3.newzbin.com/search
+
+# Here's a little taste 
+# :q => casino+royale # this is the query you're searching for
+# :category => 5 # category is movies, tv, etc
+# :ps_rb_video_format => 131072 # format means xvid, 720p, x264, etc
