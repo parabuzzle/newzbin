@@ -75,7 +75,7 @@ end
 
 describe Connection, "when doing a search with cookies" do
   before(:each) do
-    newzbin_conn = Connection.new(:nzbSmoke => "RKTU0McXx%24Uc4e4KXP1L0sl4O1U9YOchO%2B0DA%3D", :nzbSessionID => "a0fed567eb1a3e6e95c8a3d46fe0c6e7")
+    newzbin_conn = Connection.new(:nzbSmoke => "mZGahEjpg%24OnX89Sy2ExeYzlZciM5YbYWFGH0%3D", :nzbSessionID => "4196bbbb3218497a20f56fece443e7dd")
     @nzbs = newzbin_conn.search(:q => 'independence day', :ps_rb_video_format => 16, :category => 6)
   end
 
@@ -88,10 +88,9 @@ describe Connection, "when doing a search with cookies" do
   end
 
   it "should get attributes for nzbs" do
-    @nzbs.first.attributes.size.should have_at_least(1).things
+    @nzbs.first.attributes.should have_at_least(1).things
   end
 
 end
-
 
 
