@@ -2,95 +2,88 @@ require 'newzbin'
 include Newzbin
 
 
-describe Connection, "when first creating without cookies or user/pass" do
+# describe Connection, "when first creating without cookies or user/pass" do
+#   before(:each) do
+#     @newzbin_conn = Connection.new
+#   end
+# 
+#   it "should have a host" do
+#     @newzbin_conn.host.should eql('http://v3.newzbin.com')
+#   end
+# 
+#   it "should have a search path" do
+#     @newzbin_conn.search_path.should eql('/search/')
+#   end
+# 
+#   it "should have a dnzb path path" do
+#     @newzbin_conn.dnzb_path.should eql('/dnzb')
+#   end
+# 
+# end
+
+describe Connection do
+
   before(:each) do
-    @newzbin_conn = Connection.new
+    @newzbin_conn = Connection.new('mustache', 'newzbin')
   end
 
-  it "should have a host" do
-    @newzbin_conn.host.should eql('http://v3.newzbin.com')
+  describe "when creating" do
+
+    describe "sets initial vars and" do 
+      it "should have a host" do
+        @newzbin_conn.host.should == 'http://v3.newzbin.com'
+      end
+
+      it "should have a search_path" do
+        @newzbin_conn.search_path.should == '/search/'
+      end
+
+      it "should have a dnzb_path" do
+        @newzbin_conn.dnzb_path.should == '/dnzb'
+      end
+
+      it "should have a username" do
+        @newzbin_conn.username.should == 'mustache'
+      end
+
+      it "should have a password" do
+        @newzbin_conn.password.should == 'newzbin'
+      end
+    end
+
+    describe "logs in and" do
+      it "should have cookies" do
+        @newzbin_conn.agent.cookies.size.should_not == 0
+      end
+
+      it "should have an nzbsmoke and nzbsessionid" do
+        @newzbin_conn.agent.cookies.map{|o| o.name}.should include("NzbSmoke", "NzbSessionID")
+      end
+    end
+
   end
 
-  it "should have a search path" do
-    @newzbin_conn.search_path.should eql('/search/')
-  end
-
-  it "should have a dnzb path path" do
-    @newzbin_conn.dnzb_path.should eql('/dnzb')
+  describe "when doing a search" do
+    before(:each) do
+      @nzbs = @newzbin_conn.search(:q => 'no country for old men', :ps_rb_video_format => 16, :category => 6)
+    end
+  
+    it "should return an array of items" do
+      @nzbs.class.should be(Array)
+    end
+  
+    it "should return items" do
+      @nzbs.size.should have_at_least(1).things
+    end
+      
+    it "should get attributes for nzbs" do
+      @nzbs.first.attributes.should have_at_least(1).things
+    end
+  
   end
 
 end
 
 
-describe Connection, "when first creating with cookies" do
-  before(:each) do
-    @newzbin_conn = Connection.new(:nzbSmoke => "RKTU0McXx%24Uc4e4KXP1L0sl4O1U9YOchO%2B0DA%3D", :nzbSessionID => "a0fed567eb1a3e6e95c8a3d46fe0c6e7")
-  end
-
-  it "should have an nzbsmoke" do
-    @newzbin_conn.nzbSmoke.should eql('RKTU0McXx%24Uc4e4KXP1L0sl4O1U9YOchO%2B0DA%3D')
-  end
-
-  it "should have an nzbSessionID" do
-    @newzbin_conn.nzbSessionID.should eql('a0fed567eb1a3e6e95c8a3d46fe0c6e7')
-  end
-
-end
-
-
-describe Connection, "when first creating with username and pass" do
-  before(:each) do
-    @newzbin_conn = Connection.new(:username => "jon", :password => "mypass")
-  end
-
-  it "should have a username" do
-    @newzbin_conn.username.should eql('jon')
-  end
-
-  it "should have a password" do
-    @newzbin_conn.password.should eql('mypass')
-  end
-
-end
-
-describe Connection, "when doing a search without cookies" do
-  before(:each) do
-    newzbin_conn = Connection.new
-    @nzbs = newzbin_conn.search(:q => 'independence day', :ps_rb_video_format => 16, :category => 6)
-  end
-
-  it "should return an array of items" do
-    @nzbs.class.should be(Array)
-  end
-
-  it "should return items" do
-    @nzbs.size.should have_at_least(1).things
-  end
-
-  it "should get attributes for nzbs" do
-    @nzbs.first.attributes.size.should eql(0)
-  end
-
-end
-
-describe Connection, "when doing a search with cookies" do
-  before(:each) do
-    newzbin_conn = Connection.new(:nzbSmoke => "mZGahEjpg%24OnX89Sy2ExeYzlZciM5YbYWFGH0%3D", :nzbSessionID => "4196bbbb3218497a20f56fece443e7dd")
-    @nzbs = newzbin_conn.search(:q => 'independence day', :ps_rb_video_format => 16, :category => 6)
-  end
-
-  it "should return an array of items" do
-    @nzbs.class.should be(Array)
-  end
-
-  it "should return items" do
-    @nzbs.size.should have_at_least(1).things
-  end
-
-  it "should get attributes for nzbs" do
-    @nzbs.first.attributes.should have_at_least(1).things
-  end
-
-end
 
 

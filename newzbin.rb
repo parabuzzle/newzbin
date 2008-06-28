@@ -2,30 +2,26 @@ require 'rubygems'
 require 'net/http'
 require 'cgi'
 require 'xmlsimple'
+require "mechanize"
 
 module Newzbin
   
   class Connection
-    attr_accessor :host, :search_path, :dnzb_path, :username, :password, :nzbSmoke, :nzbSessionID
+    attr_accessor :agent, :host, :search_path, :dnzb_path, :username, :password
+    
 
-    def initialize(options={})
+    def initialize(username, password)
+      self.agent = WWW::Mechanize.new
       self.host = 'http://v3.newzbin.com'
       self.search_path = '/search/'
       self.dnzb_path = '/dnzb'
-      self.username = options[:username]
-      self.password = options[:password]
-      self.nzbSmoke = options[:nzbSmoke]
-      self.nzbSessionID = options[:nzbSessionID]
+      self.username = username
+      self.password = password
+      log_in
     end
 
-    def http_get(url)
-      Net::HTTP.start('v3.newzbin.com') do |http|
-        req = Net::HTTP::Get.new(url)
-        req.add_field 'Cookie', "NzbSmoke=#{self.nzbSmoke}; NzbSessionID=#{self.nzbSessionID}" if self.nzbSmoke && self.nzbSessionID
-        response = http.request(req)
-        response.body
-      end
-      
+    def http_get(path)
+      self.agent.get(self.host + path).body
     end
 
     def request_url(params)
@@ -86,6 +82,19 @@ module Newzbin
         false
       end
     
+    end
+    
+    private
+    
+    def log_in
+      login_page = self.agent.get('http://v3.newzbin.com/')
+      login_form = login_page.forms.action('/account/login/').first
+
+      login_form.username = self.username
+      login_form.password = self.password
+
+      self.agent.submit(login_form)
+      
     end
   end
   
