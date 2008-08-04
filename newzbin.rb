@@ -5,8 +5,11 @@ require 'xmlsimple'
 require "mechanize"
 
 module Newzbin
+  class NZBLimitError < StandardError
+  end
   
   class Connection
+
     attr_accessor :agent, :host, :search_path, :dnzb_path, :username, :password
     
 
@@ -59,7 +62,7 @@ module Newzbin
         response["x-dnzb-name"]
       when 450
         puts "ERROR 450: 5 nzbs per minute please."
-        false
+        raise NZBLimitError
       else 
         puts "ERROR #{response["x-dnzb-rcode"]}: #{response["x-dnzb-rtext"]}"
         false
