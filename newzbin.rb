@@ -108,7 +108,7 @@ module Newzbin
 
     def initialize(details)
       self.pub_date = details["pubDate"]
-      self.size_in_bytes = details["size"]
+      self.size_in_bytes = details["size"]["content"]
       self.category = details["category"]
       self.title = details["title"]
       self.id = details["id"]
